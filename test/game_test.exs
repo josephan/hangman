@@ -39,22 +39,22 @@ defmodule GameTest do
   end
 
   test "a guessed word is a won game" do
+    moves = [
+      {"w", :good_guess, 7}, 
+      {"i", :good_guess, 7}, 
+      {"b", :good_guess, 7}, 
+      {"l", :good_guess, 7}, 
+      {"e", :won, 7}
+    ]
+
     game = Game.new_game("wibble")
-    {game, _tally} = Game.make_move(game, "w")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "i")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "b")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "l")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "e")
-    assert game.game_state == :won
-    assert game.turns_left == 7
+
+    Enum.reduce(moves, game, fn ({guess, state, turns_left}, game) ->
+      {game, _tally} = Game.make_move(game, guess)
+      assert game.game_state == state
+      assert game.turns_left == turns_left
+      game
+    end)
   end
 
   test "bad guess is recognized" do
