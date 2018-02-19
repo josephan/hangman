@@ -7,8 +7,12 @@ defmodule Hangman.Game do
   )
 
   def new_game do
+    Dictionary.random_word() |> new_game()
+  end
+
+  def new_game(word) do
     %Hangman.Game{
-      letters: Dictionary.random_word() |> String.codepoints()
+      letters: word |> String.codepoints()
     }
   end
 
@@ -27,9 +31,30 @@ defmodule Hangman.Game do
 
   def accept_move(game, guess, _already_guessed) do
     Map.put(game, :used, MapSet.put(game.used, guess))
+    |> score_guess(Enum.member?(game.letters, guess))
+  end
+
+  def score_guess(game, _good_guess = true) do
+    new_state =
+      MapSet.new(game.letters)
+      |> MapSet.subset?(game.used)
+      |> may_won()
+
+    Map.put(game, :game_state, new_state)
+  end
+
+  def score_guess(game = %{turns_left: 1}, _not_good_guess) do
+    Map.put(game, :game_state, :lost)
+  end
+
+  def score_guess(game = %{turns_left: turns_left}, _not_good_guess) do
+    %{game | game_state: :bad_guess, :turns_left: turns_left - 1}
   end
 
   def tally(game) do
     123
   end
+
+  def may_won(true), do: :won
+  def may_won(_), do: :good_guess
 end
