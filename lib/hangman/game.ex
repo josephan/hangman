@@ -48,7 +48,7 @@ defmodule Hangman.Game do
   end
 
   def score_guess(game = %{turns_left: turns_left}, _not_good_guess) do
-    %{game | game_state: :bad_guess, :turns_left: turns_left - 1}
+    %{game | game_state: :bad_guess, turns_left: turns_left - 1}
   end
 
   def tally(game) do
