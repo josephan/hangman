@@ -21,7 +21,11 @@ defmodule Hangman.Game do
   end
 
   def make_move(game, guess) do
-    accept_move(game, guess, MapSet.member?(game.used, guess))
+    if valid_move(guess) do
+      accept_move(game, guess, MapSet.member?(game.used, guess))
+    else
+      reject_move(game)
+    end
   end
 
   def tally(game) do
@@ -34,6 +38,10 @@ defmodule Hangman.Game do
 
   # Private Functions
 
+  defp valid_move(guess) do
+    String.length(guess) == 1 && guess in Enum.map(?a..?z, fn(x) -> <<x :: utf8>> end)
+  end
+
   defp accept_move(game, guess, _already_guessed = true) do
     Map.put(game, :game_state, :already_used)
   end
@@ -41,6 +49,10 @@ defmodule Hangman.Game do
   defp accept_move(game, guess, _already_guessed) do
     Map.put(game, :used, MapSet.put(game.used, guess))
     |> score_guess(Enum.member?(game.letters, guess))
+  end
+
+  defp reject_move(game) do
+    Map.put(game, :game_state, :invalid_guess)
   end
 
   defp score_guess(game, _good_guess = true) do

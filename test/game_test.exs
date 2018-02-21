@@ -17,6 +17,16 @@ defmodule GameTest do
     end
   end
 
+  test "invalid guesses are ignored" do
+    game = Game.new_game
+
+    game = Game.make_move(game, "?")
+    assert game.game_state == :invalid_guess
+
+    game = Game.make_move(game, ".")
+    assert game.game_state == :invalid_guess
+  end
+
   test "first occurence of letter is not already used" do
     game = Game.new_game()
     game = Game.make_move(game, "x")
