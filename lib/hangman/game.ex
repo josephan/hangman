@@ -78,7 +78,7 @@ defmodule Hangman.Game do
   end
 
   defp reveal_letter(letter, _in_word = true), do: letter
-  defp reveal_letter(letter, _not_in_word), do: "_"
+  defp reveal_letter(_letter, _not_in_word), do: "_"
 
   defp may_won(true), do: :won
   defp may_won(_), do: :good_guess
