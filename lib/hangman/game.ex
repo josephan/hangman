@@ -42,7 +42,7 @@ defmodule Hangman.Game do
     String.length(guess) == 1 && guess in Enum.map(?a..?z, fn(x) -> <<x :: utf8>> end)
   end
 
-  defp accept_move(game, guess, _already_guessed = true) do
+  defp accept_move(game, _guess, _already_guessed = true) do
     Map.put(game, :game_state, :already_used)
   end
 
